@@ -1,0 +1,40 @@
+Presentation
+------------
+
+nginx-redis-proxy is a reverse proxy based on nginx and redis to cache objects (web pages and more).
+
+How it works
+------------
+
+A http client requests a web page to the frontend nginx. Nginx looks for the corresponding cached objet in redis.
+If the object is in redis, nginx serves it.
+If the object is not in redis, nginx calls a backend that generates the page and gives it back to nginx. Then, nginx put it in redis and serves it.
+
+Here, the frontend nginx is listening port 80. The backend is also nginx listening port 8080 with PHP configured. You can use what you want as backend.
+
+All the cache management is written using LUA script. 
+
+Requirements
+------------
+
+nginx-redis-proxy is working with :
+
+  - LUA
+  - LUAJIT
+  - redis
+  - nginx
+  - nginx modules
+
+
+Installation
+------------
+
+Lua :
+
+
+Redis :
+
+
+Nginx :
+
+
