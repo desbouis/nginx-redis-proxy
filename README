@@ -62,7 +62,7 @@ Lua :
 The nginx HttpLuaModule needs Lua and LuaJIT.
 see : http://www.lua.org/ - http://luajit.org/
 
-First, you must have these packeges :
+First, you must have these packages :
 # yum install ncurses-devel readline-devel
 
 Then, install Lua :
