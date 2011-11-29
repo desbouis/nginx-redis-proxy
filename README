@@ -12,6 +12,7 @@ How it works
 A http client requests a web page to the frontend nginx. Nginx looks for the corresponding cached object in redis.
 If the object is in redis, nginx serves it.
 If the object is not in redis, nginx requests a backend that generates the page and gives it back to nginx. Then, nginx put it in redis and serves it.
+All cached objects in redis has a TTL, so they are uncached naturally without any other process.
 
 The frontend is listening port 80. The backend is using nginx and listening port 8080 with PHP configured. You can use what you want as backend.
 
