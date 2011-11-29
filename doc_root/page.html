@@ -1,0 +1,18 @@
+<html>
+<head>
+<title>Page de test de parsing SSI!</title>
+</head>
+<body bgcolor="white" text="black">
+<h1>Page de test de parsing SSI!</h1>
+<div>
+Le bloc ci-dessous est un ssi en file :<br/>
+<!--# include file="bloc_ssi.html" -->
+</div>
+<div>
+Le bloc ci-dessous est un ssi en virtual :<br/>
+<!--# include virtual="/bloc_ssi.html" -->
+</div>
+<div><!--# echo var="name" default="salut les SSI" --></div>
+<div><!--# config timefmt="%s"--></div>
+</body>
+</html>
