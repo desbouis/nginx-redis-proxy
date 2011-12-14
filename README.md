@@ -169,12 +169,15 @@ Now, choose between Lua and LuaJIT :
 //$ export LUA_LIB=/path/to/lua/lib
 //$ export LUA_INC=/path/to/lua/include
 ```
+
 OR :
+
 ```
 // we say where is LuaJIT if we want to use it instead of Lua, and we want because LuaJIT is faster :
 $ export LUAJIT_LIB=/opt/luajit/lib/
 $ export LUAJIT_INC=/opt/luajit/include/luajit-2.0
 ```
+
 I choose LuaJIT !
 
 Configure :
