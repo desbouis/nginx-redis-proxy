@@ -209,7 +209,7 @@ $ ./configure --with-debug \
 
 Compile and install :
 
-```
+```bash
 $ make
 $ make install
 $ useradd nginx
