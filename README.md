@@ -55,12 +55,13 @@ see : http://www.lua.org/ - http://luajit.org/
 
 First, you must have these packages :
 
-```
+```bash
 $ yum install ncurses-devel readline-devel
 ```
+
 Then, install Lua :
 
-```
+```bash
 $ cd /opt/install
 $ wget http://www.lua.org/ftp/lua-5.1.tar.gz
 $ tar zxvf lua-5.1.tar.gz
@@ -74,7 +75,7 @@ $ make install
 
 LuaJIT will be installed in /opt/luajit.
 
-```
+```bash
 $ cd /opt/install
 $ wget http://luajit.org/download/LuaJIT-2.0.0-beta8.tar.gz
 $ tar zxvf LuaJIT-2.0.0-beta8.tar.gz
@@ -88,13 +89,13 @@ $ ln -s luajit-2.0.0-beta8 luajit
 
 Add this in the .bash_profile :
 
-```
+```bash
 export LD_LIBRARY_PATH=/opt/luajit/lib:$LD_LIBRARY_PATH
 ```
 
 ## LuaRedisParser :
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/agentzh/lua-redis-parser/tarball/v0.09rc5
 $ mv v0.09rc5 lua-redis-parser_v0.09rc5.tar.gz
 $ tar zxvf lua-redis-parser_v0.09rc5.tar.gz
@@ -109,28 +110,28 @@ Download and uncompress all these nginx modules :
 
 #### HttpSetMiscModule :
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/agentzh/set-misc-nginx-module/tarball/v0.22rc2
 $ tar zxvf ...
 ```
 
 #### HttpUpstreamKeepaliveModule :
 
-```
+```bash
 $ wget http://mdounin.ru/hg/ngx_http_upstream_keepalive/archive/tip.tar.gz
 $ tar zxvf ...
 ```
 
 #### HttpHeadersMoreModule :
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/agentzh/headers-more-nginx-module/tarball/v0.16rc2
 $ tar zxvf ...
 ```
 
 #### HttpRedis2Module :
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/agentzh/redis2-nginx-module/tarball/v0.07rc6
 $ tar zxvf ...
 ```
@@ -139,7 +140,7 @@ $ tar zxvf ...
 
 Note : NDK (Nginx Development Kit) is needed to compile nginx with HttpLuaModule - cf. http://wiki.nginx.org/HttpLuaModule
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/simpl/ngx_devel_kit/tarball/v0.2.17rc2
 $ tar zxvf ...
 $ wget --no-check-certificate https://github.com/chaoslawful/lua-nginx-module/tarball/v0.3.1rc24
@@ -148,14 +149,14 @@ $ tar zxvf ...
 
 #### HttpEchoModule :
 
-```
+```bash
 $ wget --no-check-certificate https://github.com/agentzh/echo-nginx-module/tarball/v0.37rc4
 $ tar zxvf ...
 ```
 
 ## Nginx :
 
-```
+```bash
 $ cd /opt/install
 $ wget http://nginx.org/download/nginx-1.0.9.tar.gz
 $ tar zxvf nginx-1.0.9.tar.gz
@@ -164,7 +165,7 @@ $ cd nginx-1.0.9
 
 Now, choose between Lua and LuaJIT :
 
-```
+```bash
 // nginx needs to know where is Lua :
 //$ export LUA_LIB=/path/to/lua/lib
 //$ export LUA_INC=/path/to/lua/include
@@ -172,7 +173,7 @@ Now, choose between Lua and LuaJIT :
 
 OR :
 
-```
+```bash
 // we say where is LuaJIT if we want to use it instead of Lua, and we want because LuaJIT is faster :
 $ export LUAJIT_LIB=/opt/luajit/lib/
 $ export LUAJIT_INC=/opt/luajit/include/luajit-2.0
@@ -182,7 +183,7 @@ I choose LuaJIT !
 
 Configure :
 
-```
+```bash
 $ ./configure --with-debug \
               --prefix=/opt/nginx \
               --error-log-path=/var/log/nginx/error.log \
