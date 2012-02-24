@@ -1,5 +1,7 @@
 <?php
 
+header("X-RedisCache-ttl: 60");
+
 function setInCache($buffer)
 {
     $buffer = str_replace('{{{uri}}}', $_SERVER['REQUEST_URI'], $buffer);
