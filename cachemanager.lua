@@ -1,3 +1,9 @@
+---------------------
+--                 --
+--  Cache Manager  --
+--                 --
+---------------------
+
 -- if the method is not GET or HEAD, do not read in redis
 ngx.log(ngx.NOTICE, "[LUA] Is the request cacheable ?")
 if (ngx.var.request_method ~= "GET" and ngx.var.request_method ~= "HEAD") then
@@ -10,6 +16,7 @@ end
 -- parser object that will receive redis responses and parse them into lua objects
 local parser = require "redis.parser"
 
+-- read the response in redis
 ngx.log(ngx.NOTICE, "[LUA] Is the response in the redis cache ?")
 local redis_read_response = ngx.location.capture("/redis_read", {args = {k = ngx.var.key}})
 local res, typ = parser.parse_reply(redis_read_response.body)
@@ -34,6 +41,10 @@ else
 
     -- write the response in redis
     if fallback_response.status == ngx.HTTP_OK then
+        -- our header names declaration
+        local ttl_header, expireat_header = "X-RedisCache-ttl", "X-RedisCache-expireat"
+        -- by default, the data is persistent
+        local expire_query = {"PERSIST", ngx.var.key}
         ngx.req.set_header("X-RedisCache-time", ngx.http_time(ngx.time()))
         ngx.log(ngx.NOTICE, "[LUA] got response from /fallback, uri ",ngx.var.key," must be cached")
         -- get the fallback headers
@@ -41,11 +52,17 @@ else
         for k, v in pairs(fallback_response.header) do
             table.insert(headers, k..": "..v)
         end
+        -- ttl or expiration date
+        if fallback_response.header[ttl_header] ~= nil then
+            expire_query = {"EXPIRE", ngx.var.key, fallback_response.header[ttl_header]}
+        elseif fallback_response.header[expireat_header] ~= nil then
+            expire_query = {"EXPIREAT", ngx.var.key, fallback_response.header[expireat_header]}
+        end
         -- redis transaction
         local queries = {
             {"MULTI"},
             {"HMSET", ngx.var.key, "headers", table.concat(headers, "\\n"), "body", fallback_response.body},
-            {"EXPIRE", ngx.var.key, fallback_response.header["X-RedisCache-ttl"]},
+            expire_query,
             {"EXEC"}
         }
         -- because of carriage returns in HTML code, we use the redis parser to build the queries
