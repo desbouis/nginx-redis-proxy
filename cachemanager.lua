@@ -44,24 +44,30 @@ else
     -- write the response in redis
     if backend_response.status == ngx.HTTP_OK then
 
-        -- our header names declaration
-        local ttl_header, expireat_header = "X-RedisCache-ttl", "X-RedisCache-expireat"
-        -- by default, the data is persistent
-        local expire_query = {"PERSIST", ngx.var.key}
-        ngx.req.set_header("X-RedisCache-time", ngx.http_time(ngx.time()))
         ngx.log(ngx.NOTICE, "[LUA] got response from /fallback, uri ",ngx.var.key," must be cached")
+
+        -- our header names declaration
+        local ttl_header, expireat_header, startdate_header, enddate_header = "X-RedisCache-ttl", "X-RedisCache-expireat", "X-RedisCache-startdate", "X-RedisCache-enddate"
+
+        -- ttl, expiration date or persistent data (default)
+        local expire_query = {"PERSIST", ngx.var.key}
+        local starttime, endtime = ngx.time(), "never"
+        if backend_response.header[ttl_header] ~= nil then
+            expire_query = {"EXPIRE", ngx.var.key, backend_response.header[ttl_header]}
+            endtime = starttime + backend_response.header[ttl_header]
+        elseif backend_response.header[expireat_header] ~= nil then
+            expire_query = {"EXPIREAT", ngx.var.key, backend_response.header[expireat_header]}
+            endtime = backend_response.header[expireat_header]
+        end
+
+        -- add some custome headers
+        backend_response.header[startdate_header] = ngx.http_time(starttime)
+        backend_response.header[enddate_header]   = ngx.http_time(endtime)
 
         -- get the backend headers
         local headers = {}
         for k, v in pairs(backend_response.header) do
             table.insert(headers, k..": "..v)
-        end
-
-        -- ttl or expiration date
-        if backend_response.header[ttl_header] ~= nil then
-            expire_query = {"EXPIRE", ngx.var.key, backend_response.header[ttl_header]}
-        elseif backend_response.header[expireat_header] ~= nil then
-            expire_query = {"EXPIREAT", ngx.var.key, backend_response.header[expireat_header]}
         end
 
         -- redis transaction
