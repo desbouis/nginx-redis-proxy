@@ -62,7 +62,11 @@ else
 
         -- add some custome headers
         backend_response.header[startdate_header] = ngx.http_time(starttime)
-        backend_response.header[enddate_header]   = ngx.http_time(endtime)
+        if endtime == "never" then
+            backend_response.header[enddate_header]   = endtime
+        else
+            backend_response.header[enddate_header]   = ngx.http_time(endtime)
+        end
 
         -- get the backend headers
         local headers = {}
