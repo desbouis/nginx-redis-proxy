@@ -8,19 +8,32 @@ nginx-redis-proxy is a reverse proxy based on nginx and redis to cache objects (
 A http client requests a web page to the frontend nginx. Nginx looks for the corresponding cached object in redis.
 If the object is in redis, nginx serves it.
 If the object is not in redis, nginx requests a backend that generates the page and gives it back to nginx. Then, nginx put it in redis and serves it.
-All cached objects in redis has a TTL, so they are uncached naturally without any other process.
+All cached objects in redis has got a TTL, so they are uncached naturally without any other process.
 
 The frontend is listening port 80. The backend is using nginx and listening port 8080 with PHP configured. You can use what you want as backend.
 
-All the cache management is written using LUA script.
+All the cache management is written using LUA script embeded in nginx.
+The redis TTL management in is driven by the backend by using one of these two custom headers :
+* _X-RedisCache-ttl_ : the backend can use it to fix a TTL in seconds
+* _X-RedisCache-expireat_ : the backend can use it to fix an expiration date with 'yyyy-mm-dd hh:mm:ss' format
+Two other headers are added by the cache manager :
+* _X-RedisCache-startdate_ : to know when the content has been cached
+* _X-RedisCache-enddate_ : to know when the content will expire
 
-The 'nginx_conf/' directory contains the nginx configuration files :
+The 'nginx_conf/' directory contains the cache manager and all nginx configuration files :
 
-* _www-php.conf_ : PHP backend configuration, listening port 8080
-* _proxy-redis.conf_ : frontend configuration with cache engine, listening port 80
-* _nginx-status.conf_ : just the common and simple monitoring status configuration, listening port 88
+* _cachemanager.lua_ : the lua script that manage the cache
+* _nginx.conf_ : nginx root configuration
+* _fastcgi*_ : fastcgi configuration
+* _sites-enabled/proxy-redis.conf_ : frontend configuration with cache engine, listening port 80
+* _sites-enabled/www-php.conf_ : PHP backend configuration, listening port 8080
+* _sites-enabled/nginx-status.conf_ : just the common and simple monitoring status configuration, listening port 88
 
-The 'doc_root/' directory contains some test pages in html and php. I used 'index.php' and 'david.php' to test the cache management.
+The 'doc_root/' directory contains some test pages in html and php :
+* _index.php_ : this test page is using the 'X-RedisCache-ttl' custom header
+* _test_expireat.php_ : this test page is using the 'X-RedisCache-expireat' custom header
+
+The 'php-fpm_conf/' directory contains php-fpm configuration files.
 
 # Requirements
 
