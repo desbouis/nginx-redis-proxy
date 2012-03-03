@@ -14,9 +14,12 @@ The frontend is listening port 80. The backend is using nginx and listening port
 
 All the cache management is written using LUA script embeded in nginx.
 The redis TTL management in is driven by the backend by using one of these two custom headers :
+
 * _X-RedisCache-ttl_ : the backend can use it to fix a TTL in seconds
 * _X-RedisCache-expireat_ : the backend can use it to fix an expiration date with 'yyyy-mm-dd hh:mm:ss' format
+
 Two other headers are added by the cache manager :
+
 * _X-RedisCache-startdate_ : to know when the content has been cached
 * _X-RedisCache-enddate_ : to know when the content will expire
 
@@ -30,6 +33,7 @@ The 'nginx_conf/' directory contains the cache manager and all nginx configurati
 * _sites-enabled/nginx-status.conf_ : just the common and simple monitoring status configuration, listening port 88
 
 The 'doc_root/' directory contains some test pages in html and php :
+
 * _index.php_ : this test page is using the 'X-RedisCache-ttl' custom header
 * _test_expireat.php_ : this test page is using the 'X-RedisCache-expireat' custom header
 
