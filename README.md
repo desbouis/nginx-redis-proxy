@@ -32,6 +32,11 @@ The 'nginx_conf/' directory contains the cache manager and all nginx configurati
 * _sites-enabled/www-php.conf_ : PHP backend configuration, listening port 8080
 * _sites-enabled/nginx-status.conf_ : just the common and simple monitoring status configuration, listening port 88
 
+The 'redis/' directory contains an init script and a configuration file :
+
+* _redis.conf_ : redis configuration
+* _redis.sh_ : an init script to link in /etc/init.d/redis
+
 The 'doc_root/' directory contains some test pages in html and php :
 
 * _index.php_ : this test page is using the 'X-RedisCache-ttl' custom header
