@@ -51,6 +51,7 @@ nginx-redis-proxy is working with :
 * LUA v5.1
 * LuaJIT v2.0.0-beta8
 * LuaRedisParser v0.09rc5 (redis.parser Lua library)
+* Lua CJSON 2.1.0 (JSON support for Lua - http://www.kyne.com.au/~mark/software/lua-cjson.php)
 * redis v2.2.2
 * nginx v1.0.9
 * nginx modules :
@@ -122,6 +123,16 @@ $ wget --no-check-certificate https://github.com/agentzh/lua-redis-parser/tarbal
 $ mv v0.09rc5 lua-redis-parser_v0.09rc5.tar.gz
 $ tar zxvf lua-redis-parser_v0.09rc5.tar.gz
 $ cd agentzh-lua-redis-parser-2f302a6
+$ make
+$ make INSTALL_PATH=/usr/local/lib/lua/5.1/ install
+```
+
+## Lua CJSON :
+
+```bash
+$ wget http://www.kyne.com.au/~mark/software/download/lua-cjson-2.1.0.tar.gz
+$ tar zxvf lua-cjson-2.1.0.tar.gz
+$ cd lua-cjson-2.1.0.tar.gz
 $ make
 $ make INSTALL_PATH=/usr/local/lib/lua/5.1/ install
 ```
