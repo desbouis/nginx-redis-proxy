@@ -16,6 +16,9 @@ end
 -- parser object that will receive redis responses and parse them into lua objects
 local parser = require "redis.parser"
 
+-- load json module
+local json = require "cjson"
+
 -- read the response in redis
 ngx.log(ngx.NOTICE, "[LUA] Is the response in the redis cache ?")
 local redis_read_response = ngx.location.capture("/redis_read", {args = {k = ngx.var.key}})
@@ -37,7 +40,13 @@ if (typ == parser.MULTI_BULK_REPLY and not(res == nil) and (#res > 0)) then
         end
     end
 
-    -- return the result
+    -- set headers in the response
+    local obj_headers = json.decode(headers_from_redis)
+    for h_name, h_value in pairs(obj_headers) do
+        ngx.header[h_name] = h_value
+    end
+
+    -- return the response
     ngx.print(body_from_redis)
     ngx.exit(ngx.OK)
 
@@ -82,16 +91,10 @@ else
             backend_response.header[enddate_header]   = ngx.http_time(endtime)
         end
 
-        -- get the backend headers
-        local headers = {}
-        for k, v in pairs(backend_response.header) do
-            table.insert(headers, k..": "..v)
-        end
-
         -- redis transaction
         local queries = {
             {"MULTI"},
-            {"HMSET", ngx.var.key, "headers", table.concat(headers, "\\n"), "body", backend_response.body},
+            {"HMSET", ngx.var.key, "headers", json.encode(backend_response.header), "body", backend_response.body},
             expire_query,
             {"EXEC"}
         }
