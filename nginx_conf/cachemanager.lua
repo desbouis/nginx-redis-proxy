@@ -21,10 +21,24 @@ ngx.log(ngx.NOTICE, "[LUA] Is the response in the redis cache ?")
 local redis_read_response = ngx.location.capture("/redis_read", {args = {k = ngx.var.key}})
 local res, typ = parser.parse_reply(redis_read_response.body)
 
-if (typ == parser.BULK_REPLY and not(res == nil) and (#res > 0)) then
+-- the result must be an array (MULTI_BULK_REPLY)
+if (typ == parser.MULTI_BULK_REPLY and not(res == nil) and (#res > 0)) then
     -- the content is in redis, just return the content with the good http code
     ngx.log(ngx.NOTICE, "[LUA] YES, cache HIT on cache key: ", ngx.var.key, ", content length: ", #res)
-    ngx.print(res)
+
+    -- getting headers and body
+    local headers_from_redis, body_from_redis
+    for key, val in pairs(res) do
+        if (val == "headers") then
+            headers_from_redis = res[key+1]
+        end
+        if (val == "body") then
+            body_from_redis = res[key+1]
+        end
+    end
+
+    -- return the result
+    ngx.print(body_from_redis)
     ngx.exit(ngx.OK)
 
 else
@@ -46,7 +60,7 @@ else
 
         ngx.log(ngx.NOTICE, "[LUA] got response from /fallback, uri ",ngx.var.key," must be cached")
 
-        -- our header names declaration
+        -- custom header names declaration
         local ttl_header, expireat_header, startdate_header, enddate_header = "X-RedisCache-ttl", "X-RedisCache-expireat", "X-RedisCache-startdate", "X-RedisCache-enddate"
 
         -- ttl, expiration date or persistent data (default)
